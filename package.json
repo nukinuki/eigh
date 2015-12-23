@@ -1,0 +1,43 @@
+{
+  "name": "eigh",
+  "version": "0.0.2",
+  "description": "Ы [eigh] is a WebGL port of a XI [sai] (Devildice) game originaly made by Shift",
+  "main": "eigh.js",
+  "scripts": {
+    "start": "node ./bin/www"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+ssh://git@github.com/nukinuki/eigh.git"
+  },
+  "keywords": [
+    "game",
+    "webgl",
+    "xisai",
+    "eigh",
+    "threejs",
+    "puzzle"
+  ],
+  "author": "Nukinuki",
+  "license": "SimPL-2.0",
+  "bugs": {
+    "url": "https://github.com/nukinuki/eigh/issues"
+  },
+  "homepage": "https://github.com/nukinuki/eigh#readme",
+  "devDependencies": {
+    "bower": "^1.7.1",
+    "coffee-script": "^1.10.0",
+    "gulp": "^3.9.0",
+    "mocha": "^2.3.4",
+    "should": "^8.0.2"
+  },
+  "dependencies": {
+    "express": "^4.13.3",
+    "body-parser": "~1.13.2",
+    "cookie-parser": "~1.3.5",
+    "debug": "~2.2.0",
+    "jade": "~1.11.0",
+    "morgan": "~1.6.1",
+    "serve-favicon": "~2.3.0"
+  }
+}

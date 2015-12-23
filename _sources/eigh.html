@@ -1,0 +1,84 @@
+<html>
+	<head>
+		<title>Ы [eigh]</title>
+		<style>
+			@font-face {
+			  font-family: 'Chango';
+			  font-style: normal;
+			  font-weight: normal;
+			  src: local('Chango'), local('Chango'), url('/eigh/js/Chango-Regular.ttf') format('truetype');
+			}
+		
+			* {
+				margin: 0;
+				padding: 0;
+			}
+			canvas#gamescreen { margin: 0 auto;}
+
+			.spf {
+				position: absolute;
+				left: 10px;
+				top: 10px;
+				color: #666;
+				font-family: Arial;
+				font-size: 11px;
+			}
+			body {
+				background: black;
+			}
+			body.paused {
+				background: #666666;
+			}
+			body.paused canvas {
+				opacity: 0.5;
+			}
+			.score {
+				position: absolute;
+				left: 10px;
+				top: 30px;
+				color: white;
+				font-family: Chango;
+				font-weight: 400;
+				font-size: 30px;
+			}
+		</style>
+	</head>
+	<body>
+		<!--<script src="https://raw.github.com/mrdoob/three.js/master/build/three.js"></script>
+		<script src="http://code.jquery.com/jquery-latest.min.js"></script>-->
+
+		<!--<link href='http://fonts.googleapis.com/css?family=Chango' rel='stylesheet' type='text/css'>-->
+
+		<script src="/eigh/js/three.js"></script>
+		<script src="/eigh/js/jquery-latest.min.js"></script>
+		<script src="/eigh/js/Stats.js"></script>
+		<script type="text/javascript" src="/eigh/js/jplayer/jquery.jplayer.min.js"></script>
+		<!--<script src="/eigh/js/typeface-0.15.js"></script>
+		<script src="/eigh/js/chango_regular.typeface.js"></script>-->
+		<script src="/eigh/js/eigh.js"></script>
+		
+		<div class="sounds">
+			<div id="chain"></div>
+			<div id="dissapear"></div>
+			<div id="game_start"></div>
+			<div id="menu_select"></div>
+			<div id="menu_speed"></div>
+			<div id="menu"></div>
+			<div id="ones"></div>
+			<div id="pause"></div>
+			<div id="push"></div>
+			<div id="push2"></div>
+			<div id="hop"></div>
+			<div id="yup"></div>
+			<div id="ready"></div>
+			<div id="roll"></div>
+			<div id="thunder"></div>
+		</div>
+		
+	</body>
+</html>
+<!--
+
+Marble texture: http://enchantedgal-stock.deviantart.com/art/Marble-Stone-Texture-Stock-52654528
+
+-->

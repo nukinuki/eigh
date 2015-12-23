@@ -1,0 +1,24 @@
+{
+  "name": "eigh",
+  "version": "0.0.2",
+  "authors": [
+    "Nukinuki <tanuki.coon@gmail.com>"
+  ],
+  "description": "Ы [eigh]",
+  "main": "eigh.js",
+  "keywords": [
+    "eigh"
+  ],
+  "license": "SimPL-2.0",
+  "homepage": "bl-game.ru",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "three.js": "threejs#*"
+  }
+}

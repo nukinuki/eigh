@@ -1,0 +1,65 @@
+@font-face {
+    font-family: 'milkywell';
+    src: url('/fonts/milkywell-webfont.eot');
+    src: url('/fonts/milkywell-webfont.eot?#iefix') format('embedded-opentype'),
+         url('/fonts/milkywell-webfont.woff') format('woff'),
+         url('/fonts/milkywell-webfont.ttf') format('truetype'),
+         url('/fonts/milkywell-webfont.svg#milkywellregular') format('svg');
+    font-weight: normal;
+    font-style: normal;
+}	
+
+* {
+	margin: 0;
+	padding: 0;
+}
+canvas#gamescreen { margin: 0 auto; }
+
+.spf {
+	position: absolute;
+	left: 10px;
+	top: 10px;
+	color: #666;
+	font-family: Arial;
+	font-size: 11px;
+}
+body {
+	background: black;
+	color: white;
+}
+body.paused {
+	background: #666666;
+}
+body.paused canvas {
+	opacity: 0.5;
+}
+.score {
+	position: absolute;
+	left: 10px;
+	top: 30px;
+	color: white;
+	font-family: milkywell;
+	font-weight: 400;
+	font-size: 30px;
+}
+.header .menu {
+	list-style: none;
+	position: absolute;
+	bottom: 0;
+	right: 0;
+	font-size: 14px;
+	font-family: milkywell;
+	white-space: nowrap;
+	z-index: 10;
+}
+.header .menu li {
+	float: left;
+}
+.header .menu li a {
+	display: block;
+	background: white;
+	color: black;
+	text-decoration: none;
+	padding: 10px 20px;
+	border-left: 1px solid black;
+}
