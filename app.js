@@ -7,6 +7,8 @@ var bodyParser = require('body-parser');
 
 var index = require('./controllers/index');
 var users = require('./controllers/users');
+var intro = require('./controllers/intro');
+var game = require('./controllers/game');
 
 var app = express();
 
@@ -23,6 +25,8 @@ app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
 app.use('/', index);
+app.use('/intro', intro);
+app.use('/game', game);
 app.use('/users', users);
 
 // catch 404 and forward to error handler

@@ -1,5 +1,4 @@
 var Devil = function(){
-	//var Mesh = new THREE.Mesh(Geometries.devil, Materials.dummy);
 	var Mesh = new THREE.Mesh(Geometries.aqui, Materials.aquired);
 	Mesh.material.materials[0].morphTargets = true;
 	this.Mesh = Mesh;
@@ -21,7 +20,8 @@ var Devil = function(){
 	this.boardy = 3;
 
 	this.isOnDice = true;
-	this.activeDice; 
+	this.activeDice;
+	this.isPushing = false;
 
 	this.MOVE_SPEED = MOVE_SPEED_4;
 
@@ -90,6 +90,7 @@ var Devil = function(){
 		var nextx = Mesh.position.x;
 		var nexty = Mesh.position.z;
 		var delta = SPF * this.MOVE_SPEED;
+
 		switch(direction){
 			case 'LEFT':
 				nextx = Mesh.position.x - delta;
@@ -107,6 +108,9 @@ var Devil = function(){
 
 		// Check dices
 		if(this.isOnDice){
+
+			this.isPushing = false;
+
 			var nextdice = Board.getDiceAtPos(nextx, nexty);
 			var dice = Board.getDiceAtPos(Mesh.position.x, Mesh.position.z);
 			//console.log(dice);
@@ -169,10 +173,18 @@ var Devil = function(){
 			var nextdice = Board.getDiceAtPos(nextx, nexty);
 			if(nextdice === undefined) return false; // floor is 0, undefined is edge. Cant move.
 			if(typeof nextdice == 'object'){
-				if(!nextdice.props.canJumpOn) canmove = false;
+				if(!nextdice.props.canJumpOn){
+					canmove = false;
+				}
 				if(nextdice.props.canMove){
-					console.log(Keyboard.holdTime(direction));
-					if(Keyboard.holdTime(direction) >= 1 / (t.MOVE_SPEED * 4)) {
+					if(this.isPushing != direction){
+						this.isPushing = direction;
+						Keyboard.resetHoldTime();
+						Touch.resetHoldTime();
+					}
+					//console.log(Keyboard.holdTime(direction), Touch.holdTime(direction));
+					if(Keyboard.holdTime(direction) >= 2 / (t.MOVE_SPEED)
+						|| Touch.holdTime(direction) >= 2 / (t.MOVE_SPEED)) {
 						nextdice.push(direction); // Can push only after some time, let's suppose it's speed dependant
 					}
 				}

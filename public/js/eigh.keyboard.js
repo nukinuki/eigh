@@ -26,20 +26,31 @@ var keyboard = new function(){
 		$(document).on('keydown', function(event){
 			if(!keystate[event.keyCode]) t.addToQueue(event.keyCode);
 			keystate[event.keyCode] = true;
-			keyhold[event.keyCode] += SPF;
-		})
+
+			if(!keyhold[event.keyCode])
+				keyhold[event.keyCode] = Clock.elapsedTime;
+		});
 		$(document).on('keyup', function(event){
 			keystate[event.keyCode] = false;
-			keyhold[event.keyCode] = 0;
-		})
+			keyhold[event.keyCode] = undefined;
+		});
 		window.components.loaded('keyboard');
+	}
+
+	this.resetHoldTime = function(){
+		keyhold = [];
 	}
 
 	this.isPressed = function(key){
 		return keystate[KCODES[key]];
 	}
 	this.holdTime = function(key){
-		return keyhold[KCODES[key]];
+		if(keyhold[KCODES[key]]){
+			return Clock.elapsedTime - keyhold[KCODES[key]];
+		} else {
+			return 0;
+		}
+		
 	}
 	this.addToQueue = function(key){
 		if(queue.length >= 10){

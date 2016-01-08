@@ -3,3 +3,4 @@ bower_components
 *.ogg
 *.mp3
 .DS_Store
+/_art

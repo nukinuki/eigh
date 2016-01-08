@@ -1,4 +1,4 @@
-var BUILD = '170422.1030';
+var BUILD = '160108.0242';
 var JS_DIR = '/js/';
 var components_root = "/";
 
@@ -7,11 +7,13 @@ var INCLUDES = [
 	'constants',
 	'utils',
 	'keyboard',
-	'3d',
+	'touch',
 	'board',
 	'dice',
+	'scene',
 	'devil',
-	'2d'
+	'2d',
+	'screen'
 ]
 
 var gamestate = {
@@ -24,19 +26,7 @@ var sounds, music;
 
 var game_paused = false;
 
-var INCLUDES_LOADED = 0;
-
-/*$.each(INCLUDES, function(key, module){
-	$.getScript(JS_DIR + 'eigh.' + module + '.js', function(){
-		INCLUDES_LOADED++;
-		$(document).trigger('eigh.script.loaded', [module]);
-	}).fail(function(jdxhr, settings, exception){
-		console.log('Error in ' + 'eigh.' + module + '.js -- ' + arguments[2].toString());
-	});
-});*/
-
 console.log(BUILD);
-
 
 var components = new function() {
 	var self = this;
@@ -251,6 +241,7 @@ var menuloop = false;
 
 var Clock = new THREE.Clock();
 var SPF = Clock.getDelta() / 1000;
+//console.log(SPF);
 
 var animID;
 
@@ -349,23 +340,23 @@ function restartGame(type){
 function movePlayers(){
 	// Checking the keys
 	devil.updateHeight();
-	if(Keyboard.isActionKeyPressed()){
+	if(Keyboard.isActionKeyPressed() || Touch.isMoving()){
 		if(devil.action == 'stand'){
 			devil.stopAllAnimations();
 			devil.animations.walk.play();
 			devil.action = 'walk';
 		}
 		// Should check for which key is last. TODO.
-		if(Keyboard.isPressed('LEFT')){
+		if(Keyboard.isPressed('LEFT') || Touch.isLeft()){
 			devil.move('LEFT'); return;
 		}
-		if(Keyboard.isPressed('UP')){
+		if(Keyboard.isPressed('UP') || Touch.isUp()){
 			devil.move('UP'); return;
 		}
-		if(Keyboard.isPressed('RIGHT')){
+		if(Keyboard.isPressed('RIGHT') || Touch.isRight()){
 			devil.move('RIGHT'); return;
 		}
-		if(Keyboard.isPressed('DOWN')){
+		if(Keyboard.isPressed('DOWN') || Touch.isDown()){
 			devil.move('DOWN'); return;
 		}
 	} else {
@@ -408,7 +399,8 @@ function initEvents(){
 				return;
 			}
 			if(event.keyCode == KEY_ESC) {
-				restartGame();
+				//restartGame();
+				window.eigh.screens.game.backToIntro();
 				event.preventDefault();
 				return;
 			}
@@ -566,23 +558,11 @@ function jplayerReady(id){
     console.log('media set: ' + "/sounds/"+id+".ogg");
 }
 
-$(function(){
 
-	components.init();
-
-	$(document).on('eigh.script.loaded', function(event, module){
-		INCLUDES_LOADED++;
-		console.log('Module loaded: [' + module + ']');
-		if(INCLUDES_LOADED == INCLUDES.length){
-			console.log('All modules loaded');
-			console.log('But waiting for 3D models to load');
-			$(document).on('eigh.aqui.loaded', initGame);
-			//initGame();
-		}
-	});
+window.components.require(['screen'], function(){
 
 	sounds = new Howl({
-		urls: ['/sounds/eigh_sounds_sprites.ogg'],
+		urls: ['/sounds/eigh_sounds_sprites.ogg', '/sounds/eigh_sounds_sprites.mp3'],
 		sprite: {
 			gamestart: [0, 2200],
 			roll: [2500, 300],
@@ -614,26 +594,67 @@ $(function(){
 
 	music = {
 		trial: new Howl({
-			urls: ['/music/xi_trial.ogg']
+			urls: ['/music/xi_trial.ogg', '/music/xi_trial.mp3']
 		}),
 		timeup: new Howl({
-			urls: ['/music/bombastic_timeup.ogg']
+			urls: ['/music/bombastic_timeup.ogg', '/music/bombastic_timeup.mp3']
 		})
 	}
 
-	/*$('.sounds div').each(function(){
-		var id=$(this).attr('id');
-		$(this).jPlayer({
-			ready: function(){
-				console.log('jplayer ready');
-				jplayerReady(id);
-			},
-			error: function(event){
-				console.log('something wrong', event.jPlayer.error.message);
-			},
-			swfPath: JS_DIR + "jplayer/",
-			supplied: "oga"
-		});
+	var gameScreen = new Screen({
+		name: 'game',
+		prepare: function(){
+			
+		},
+		start: function(){
+			$('body').load('/game #wrapper', function(){
+				gameScreen.init();
+			});
+			window.components.require(INCLUDES, function(){
+				$(document).on('eigh.aqui.loaded', function(){
+					sceneInit();
+					Touch.initDOMEvents();
+					initGame();
+					window.eigh.screens.game.transitionIn();
+				});
+			});
+		},
+		init: function(){
+			$('a[href="#test"]').on('click', function(e){
+				console.log('click!');
+				e.preventDefault();
+				sfx('gong');
+			});
+		},
+		backToIntro: function(){
+			//music.current.fade({from: 1.0, to: 0.0, duration: 1, callback: function(){
+			//	music.current.stop();
+			//}});
+
+			this.transitionTo('intro');
+		},
+		beforeTransitionEnd: function(direction){
+			if(direction == 'out'){
+				game_paused = true;
+				Clock.stop();
+				Board.pauseSpawn();
+				music.current.stop();
+				$('body').html("");
+				//window.eigh.screens.intro.start();
+			}
+		}
 	});
-	*/
+});
+
+
+$(function(){
+
+	// Logging
+	$(document).on('eigh.script.loaded', function(event, module){
+		console.log('Module loaded: [' + module + ']');
+	});
+	window.components.require(['intro'], function(){
+		console.log('intro should start now');
+		window.eigh.screens.intro.start();
+	});
 });

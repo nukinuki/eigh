@@ -26,10 +26,12 @@ else {
 	//renderer = new THREE.CanvasRenderer();
 }
 
-
 renderer.setSize(scene_width, scene_height);
-document.body.appendChild(renderer.domElement);
-$(renderer.domElement).attr('id', 'gamescreen').css({width: scene_width + 'px', height: scene_height + 'px'});
+
+function sceneInit(){
+	document.getElementById('wrapper').appendChild(renderer.domElement);
+	$(renderer.domElement).attr('id', 'gamescreen').css({width: scene_width + 'px', height: scene_height + 'px'});
+}
 
 renderer.shadowMapSoft = true;
 
@@ -38,7 +40,7 @@ var Textures;
 var jsonLoader;
 var Materials;
 
-var Geometries = new function(){
+window.Geometries = new function(){
 	this.dice = new THREE.CubeGeometry(1,1,1);
 	this.board = new THREE.CubeGeometry(7.2,0.2,7.2)
 	this.devil = new THREE.SphereGeometry(0.25);
@@ -57,22 +59,6 @@ var Lights = new function(){
 		
 		scene.add(this.ambient);
 	}
-}
-
-var Sprites = new function(){
-	//var texture = new THREE.Texture(canvas);
-  	//texture.needsUpdate = true;
-
-  	/*var sprite = new THREE.Sprite(new THREE.SpriteMaterial({
-  		map: Textures.dice6,
-  		transparent: true,
-  		useScreenCoordinates: true,
-  		alignment: THREE.SpriteAlignment.topLeft 
-  	}));
-  	sprite.position.set(10,10,0);
-  	sprite.scale.set(70,70,1);
-  	scene.add(sprite);
-  	*/
 }
 
 var projector = new THREE.Projector();
@@ -491,8 +477,8 @@ function aquiLoaded(geometry, materials){
 	});
 	
 	Materials.aquired = new THREE.MeshFaceMaterial(new Array(aquitoon));
-	
 	$(document).trigger('eigh.aqui.loaded');
+	window.aquiLoaded = true;
 }
 function cubeLoaded(geometry, materials){
 	Geometries.roundcube = geometry;
