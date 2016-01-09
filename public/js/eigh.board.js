@@ -1,7 +1,8 @@
 /* Board object */
 
-var board = new function(){
+eigh.board = new function(){
 	var Mesh;
+	var config = eigh.config;
 	this.Mesh = Mesh;
 	var t = this;
 	
@@ -18,16 +19,16 @@ var board = new function(){
 	this.lastspawn;
 
 	this.updateSpawnTime = function(){
-		if(this.dices.length >= DICES_UNTIL_LONG_SPAWN){
-			this.spawnTime = SPAWN_TIME;
+		if(this.dices.length >= config.DICES_UNTIL_LONG_SPAWN){
+			this.spawnTime = config.SPAWN_TIME;
 		} else {
-			this.spawnTime = SPAWN_TIME / 2;
+			this.spawnTime = config.SPAWN_TIME / 2;
 		}
 	}
 	this.startSpawn = function(){
 		t.lastspawn = new Date().getTime();
 		t.spawntimer = setTimeout(function(){
-			if(window.gametype == 'time' && t.dices.length >= 42){
+			if(eigh.gametype == 'time' && t.dices.length >= 42){
 				// Stop spawning in time mode when only 7 empty squares left
 			} else {
 				t.newDice();
@@ -56,11 +57,11 @@ var board = new function(){
 		var properties = window.components.getProperties('board');
 		$.extend(self, properties);
 
-		this.spawnTime = SPAWN_TIME / 2;
+		this.spawnTime = config.SPAWN_TIME / 2;
 
-		var Mesh = new THREE.Mesh(Geometries.board, Materials.board);
+		var Mesh = new THREE.Mesh(eigh.scene.Geometries.board, eigh.scene.Materials.board);
 
-		scene.add(Mesh);
+		eigh.scene.scene.add(Mesh);
 		Mesh.position.y = -0.1;
 		Mesh.position.x = 0.2;
 		Mesh.position.z = 0.2;
@@ -107,7 +108,7 @@ var board = new function(){
 			freespot = {x: x, y: y, index: (y*width + x)}
 		}
 		
-		var dice = new Dice(pattern);
+		var dice = new eigh.Dice(pattern);
 		dice.position(freespot.x, freespot.y);
 		this.matrix[freespot.index] = dice.top;
 		this.dices.push(dice);
@@ -191,8 +192,8 @@ var board = new function(){
 					dice.chain_number = n;
 					dice.activateChain();
 				});
-				player.activateChain(dice.top, dd.length, n);
-				if(n > 1) devil.chainHop();
+				eigh.currentGame.player.activateChain(dice.top, dd.length, n);
+				if(n > 1) eigh.currentGame.devil.chainHop();
 			}
 		} else { // Checking ones
 			var activate = false;
@@ -216,7 +217,7 @@ var board = new function(){
 						d.activateOne();
 					}
 				});
-				if(count > 0) player.activateOne(count);
+				if(count > 0) eigh.currentGame.player.activateOne(count);
 			}
 		}
 	}
@@ -228,5 +229,5 @@ var board = new function(){
 		return n + 1;
 	}
 }
-var Board = board;
-window.components.require(['scene'], board.init);
+
+window.components.require(['scene'], eigh.board.init);

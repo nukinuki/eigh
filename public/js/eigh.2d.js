@@ -1,6 +1,6 @@
 // Here goes everything
 
-var ScoreDisplay = new function(){
+eigh.ScoreDisplay = new function(){
   var t = this;
 
 	var canvas = document.createElement('canvas');
@@ -29,15 +29,15 @@ var ScoreDisplay = new function(){
   this.init = function(){
     this.initWidth();
     this.lastScore = -1;
-    scene.add(sprite);
+    eigh.scene.scene.add(sprite);
     this.show(0);
   }
 
   this.initWidth = function(){
-    sprite_w = Math.round(scene_width / 4);
-    sprite_y = scene_height - sprite_w;
+    sprite_w = Math.round(eigh.scene.scene_width / 4);
+    sprite_y = eigh.scene.scene_height - sprite_w;
 
-    sprite.position.set(scene_width * 0.02,sprite_y,0);
+    sprite.position.set(eigh.scene.scene_width * 0.02,sprite_y,0);
     sprite.scale.set(sprite_w,sprite_w,1);
   }
 
@@ -59,7 +59,7 @@ var ScoreDisplay = new function(){
 	}
 }
 
-var ChainDisplay = new function(){
+eigh.ChainDisplay = new function(){
   var t = this;
 
   this.show = function(chain, score, x, y){
@@ -110,15 +110,15 @@ var ChainDisplay = new function(){
       alignment: THREE.SpriteAlignment.center
     }));
 
-    var sprite_w = Math.round(scene_width / 4);
+    var sprite_w = Math.round(eigh.scene.scene_width / 4);
 
     sprite_chain.position.set(x, y, 0);
     sprite_chain.scale.set(sprite_w, sprite_w, 1);
     sprite_score.scale.set(sprite_w, sprite_w, 1);
 
-    scene.add(sprite_chain);
+    eigh.scene.scene.add(sprite_chain);
 
-    Animations.start(function(){
+    eigh.Animations.start(function(){
       t.animateChain(sprite_chain, sprite_score);
     });
   }
@@ -144,26 +144,26 @@ var ChainDisplay = new function(){
           sprite_score.position = sprite_chain.position.clone();
           state.phase = 1;
           
-          scene.remove(sprite_chain);
-          scene.add(sprite_score);
+          eigh.scene.scene.remove(sprite_chain);
+          eigh.scene.scene.add(sprite_score);
         }
         sprite_score.position.y -= 1;
         sprite_score.scale.x -= 1;
         sprite_score.scale.y -= 1;
         sprite_score.material.opacity -= 0.01;
       }
-      state.progress += SPF * CHAINSCORE_LIFT_SPEED;
-      Animations.start(function(){
+      state.progress += eigh.getSPF() * CHAINSCORE_LIFT_SPEED;
+      eigh.Animations.start(function(){
         t.animateChain(sprite_chain, sprite_score, state);
       });
 
     } else {
-      scene.remove(sprite_score);
+      eigh.scene.scene.remove(sprite_score);
     }
   }
 }
 
-var TimeDisplay = new function(){
+eigh.TimeDisplay = new function(){
   var t = this;
 
   var canvas = document.createElement('canvas');
@@ -201,16 +201,16 @@ var TimeDisplay = new function(){
   }
 
   this.init = function(){
-    this.time = TIME_LIMIT;
-    this.lasttime = this.gettimestring(TIME_LIMIT); // should make it
+    this.time = eigh.config.TIME_LIMIT;
+    this.lasttime = this.gettimestring(eigh.config.TIME_LIMIT); // should make it
 
-    sprite_w = Math.round(scene_width / 3);
-    sprite_y = scene_height * 0.08;
+    sprite_w = Math.round(eigh.scene.scene_width / 3);
+    sprite_y = eigh.scene.scene_height * 0.08;
 
-    sprite.position.set(scene_width / 2, sprite_y, 0);
+    sprite.position.set(eigh.scene.scene_width / 2, sprite_y, 0);
     sprite.scale.set(sprite_w,sprite_w,1);
 
-    scene.add(sprite);
+    eigh.scene.scene.add(sprite);
   }
 
   this.update = function(){
@@ -254,10 +254,10 @@ var TimeDisplay = new function(){
     }
 
     var temptime = this.time;
-    this.time -= SPF;
+    this.time -= eigh.getSPF();
 
-    if(temptime > TIME_WARNING && this.time <= TIME_WARNING){
-      $(document).trigger('eigh.timewarning');
+    if(temptime > eigh.config.TIME_WARNING && this.time <= eigh.config.TIME_WARNING){
+      $(document).trigger('eighTimewarning');
     }
 
 
@@ -268,12 +268,6 @@ var TimeDisplay = new function(){
   }
 }
 
-var scene2d = new function(){
-  this.init = function(){
-    // Дополняем класс параметрами из вызова
-    var properties = window.components.getProperties('2d');
-    $.extend(self, properties);
-    window.components.loaded('2d');
-  }
-}
-window.components.require(['scene'], scene2d.init);
+window.components.require(['scene'], function(){
+  window.components.loaded('2d');
+});

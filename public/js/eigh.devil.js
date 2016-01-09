@@ -1,5 +1,5 @@
-var Devil = function(){
-	var Mesh = new THREE.Mesh(Geometries.aqui, Materials.aquired);
+eigh.Devil = function(){
+	var Mesh = new THREE.Mesh(eigh.scene.Geometries.aqui, eigh.scene.Materials.aquired);
 	Mesh.material.materials[0].morphTargets = true;
 	this.Mesh = Mesh;
 	var t = this;
@@ -14,7 +14,7 @@ var Devil = function(){
 	Mesh.position.z = 0;
 	Mesh.position.y = this.yOnDice; // above the Dice
 
-	scene.add(Mesh);
+	eigh.scene.scene.add(Mesh);
 
 	this.boardx = 3;
 	this.boardy = 3;
@@ -23,7 +23,7 @@ var Devil = function(){
 	this.activeDice;
 	this.isPushing = false;
 
-	this.MOVE_SPEED = MOVE_SPEED_4;
+	this.MOVE_SPEED = eigh.constants.MOVE_SPEED_4;
 
 	this.action = 'stand';
 	
@@ -32,13 +32,13 @@ var Devil = function(){
 	this.rotationAnimation = false; // index of current rotation animation in queue. For cancelling. 
 	
 	this.animations = {
-		stand: new keyframeAnimation({
+		stand: new eigh.keyframeAnimation({
 			frames: 20,
 			offset: 0,
 			duration: 1,
 			mesh: Mesh
 		}),
-		walk: new keyframeAnimation({
+		walk: new eigh.keyframeAnimation({
 			frames: 16,
 			offset: 20,
 			duration: 2 / this.MOVE_SPEED,
@@ -58,13 +58,13 @@ var Devil = function(){
 	
 	this.setPosition = function(x, y){
 		if(x === undefined && y === undefined){
-			var spot = Board.getRandomBusySpot();
+			var spot = eigh.board.getRandomBusySpot();
 			var x = spot.x;
 			var y = spot.y;
 		}
 		this.boardx = x;
 		this.boardy = y;
-		var dice = Board.getDiceAt(x, y);
+		var dice = eigh.board.getDiceAt(x, y);
 		if(dice == 0) this.isOnDice = false; else this.isOnDice = true;
 		this.activeDice = dice;
 
@@ -74,12 +74,12 @@ var Devil = function(){
 	};
 
 	this.setOnDice = function(){
-		var spot = Board.getRandomBusySpot();
+		var spot = eigh.board.getRandomBusySpot();
 		this.setPosition(spot.x, spot.y);
 	}
 
 	this.setOnFloor = function(){
-		var spot = Board.getRandomFreeSpot();
+		var spot = eigh.board.getRandomFreeSpot();
 		this.setPosition(spot.x, spot.y);
 	}
 
@@ -89,7 +89,7 @@ var Devil = function(){
 		var canmove = true;
 		var nextx = Mesh.position.x;
 		var nexty = Mesh.position.z;
-		var delta = SPF * this.MOVE_SPEED;
+		var delta = eigh.getSPF() * this.MOVE_SPEED;
 
 		switch(direction){
 			case 'LEFT':
@@ -111,8 +111,8 @@ var Devil = function(){
 
 			this.isPushing = false;
 
-			var nextdice = Board.getDiceAtPos(nextx, nexty);
-			var dice = Board.getDiceAtPos(Mesh.position.x, Mesh.position.z);
+			var nextdice = eigh.board.getDiceAtPos(nextx, nexty);
+			var dice = eigh.board.getDiceAtPos(Mesh.position.x, Mesh.position.z);
 			//console.log(dice);
 
 			if(dice.animation_started){
@@ -146,7 +146,8 @@ var Devil = function(){
 			if(nextdice == 0){ // is floor
 				if(!dice.props.canWalkOff) canmove = false;
 				if(dice.props.canFlip) dice.flip(direction);
-				if(dice.props.canWalkOff) sfx('hop');
+				if(dice.props.canWalkOff) eigh.sfx('hop');
+				return canmove;
 			}
 			if(typeof nextdice == 'object'){
 
@@ -170,7 +171,7 @@ var Devil = function(){
 				}
 			}
 		} else { // is on floor
-			var nextdice = Board.getDiceAtPos(nextx, nexty);
+			var nextdice = eigh.board.getDiceAtPos(nextx, nexty);
 			if(nextdice === undefined) return false; // floor is 0, undefined is edge. Cant move.
 			if(typeof nextdice == 'object'){
 				if(!nextdice.props.canJumpOn){
@@ -179,17 +180,17 @@ var Devil = function(){
 				if(nextdice.props.canMove){
 					if(this.isPushing != direction){
 						this.isPushing = direction;
-						Keyboard.resetHoldTime();
-						Touch.resetHoldTime();
+						eigh.keyboard.resetHoldTime();
+						eigh.touch.resetHoldTime();
 					}
-					//console.log(Keyboard.holdTime(direction), Touch.holdTime(direction));
-					if(Keyboard.holdTime(direction) >= 2 / (t.MOVE_SPEED)
-						|| Touch.holdTime(direction) >= 2 / (t.MOVE_SPEED)) {
+					//console.log(eigh.keyboard.holdTime(direction), eigh.touch.holdTime(direction));
+					if(eigh.keyboard.holdTime(direction) >= 2 / (t.MOVE_SPEED)
+						|| eigh.touch.holdTime(direction) >= 2 / (t.MOVE_SPEED)) {
 						nextdice.push(direction); // Can push only after some time, let's suppose it's speed dependant
 					}
 				}
 				// Can move to the any other dice
-				if(canmove) sfx('yup');
+				if(canmove) eigh.sfx('yup');
 			}
 		}
 		return canmove;
@@ -203,29 +204,29 @@ var Devil = function(){
 			case 'LEFT':
 				if(this.rotation == 'DOWN') clockwise = true;
 				if(this.rotation == 'UP') clockwise = false;
-				this.rotateTo(ROTATION_LEFT, clockwise);
+				this.rotateTo(eigh.constants.ROTATION_LEFT, clockwise);
 				break;
 			case 'UP':
 				if(this.rotation == 'LEFT') clockwise = true;
 				if(this.rotation == 'RIGHT') clockwise = false;
-				this.rotateTo(ROTATION_UP, clockwise);
+				this.rotateTo(eigh.constants.ROTATION_UP, clockwise);
 				break;
 			case 'RIGHT':
 				if(this.rotation == 'UP') clockwise = true;
 				if(this.rotation == 'DOWN') clockwise = false;
-				this.rotateTo(ROTATION_RIGHT, clockwise);
+				this.rotateTo(eigh.constants.ROTATION_RIGHT, clockwise);
 				break;
 			case 'DOWN':
 				if(this.rotation == 'RIGHT') clockwise = true;
 				if(this.rotation == 'LEFT') clockwise = false;
-				this.rotateTo(ROTATION_DOWN, clockwise);
+				this.rotateTo(eigh.constants.ROTATION_DOWN, clockwise);
 		}
 		this.rotation = direction;
 	}
 	this.rotateTo = function(angle, clockwise, state){
 		if(!state){
-			if(t.rotationAnimation != false) Animations.cancel(t.rotationAnimation);
-			t.rotationAnimation = Animations.start(function(){
+			if(t.rotationAnimation != false) eigh.Animations.cancel(t.rotationAnimation);
+			t.rotationAnimation = eigh.Animations.start(function(){
 				t.rotateTo(angle, clockwise, 1)
 			});
 			return;
@@ -233,7 +234,7 @@ var Devil = function(){
 		t.rotationAnimation = false;
 		var speed = t.MOVE_SPEED * Math.PI;
 		if(clockwise){
-			t.Mesh.rotation.y -= SPF * speed;
+			t.Mesh.rotation.y -= eigh.getSPF() * speed;
 			if(angle != 0) {
 				if(t.Mesh.rotation.y < 0) t.Mesh.rotation.y += (Math.PI * 2);
 			}
@@ -242,28 +243,28 @@ var Devil = function(){
 				return;
 			}
 		} else {
-			t.Mesh.rotation.y += SPF * speed;
+			t.Mesh.rotation.y += eigh.getSPF() * speed;
 			if(t.Mesh.rotation.y > (Math.PI * 2)) t.Mesh.rotation.y -= (Math.PI * 2);
 			if(t.Mesh.rotation.y > angle){
 				t.Mesh.rotation.y = angle;
 				return;
 			}
 		}
-		t.rotationAnimation = Animations.start(function(){
+		t.rotationAnimation = eigh.Animations.start(function(){
 			t.rotateTo(angle, clockwise, 1)
 		});
 	}
 	
 	this.chainHop = function(state){
 		if(!state){
-			Animations.start(function(){t.chainHop({progress: 0, angle: t.Mesh.rotation.y, height: t.Mesh.position.y, direction: t.rotation})});
+			eigh.Animations.start(function(){t.chainHop({progress: 0, angle: t.Mesh.rotation.y, height: t.Mesh.position.y, direction: t.rotation})});
 			return;
 		}
 		
 		var speed = 3;
 		var jump = 0.5; // half of the dice
 		
-		state.progress += SPF * speed;
+		state.progress += eigh.getSPF() * speed;
 		if(state.progress > 1) state.progress = 1;
 		t.Mesh.position.y = state.height + jump - Math.abs(state.progress - 0.5) * jump * 2;
 		
@@ -273,7 +274,7 @@ var Devil = function(){
 		} // Not rotating when player moves to another direction
 		
 		if(state.progress < 1) {
-			Animations.start(function(){t.chainHop(state)});
+			eigh.Animations.start(function(){t.chainHop(state)});
 		}
 	}
 	
@@ -283,7 +284,7 @@ var Devil = function(){
 	
 		if(this.canMove(direction)){
 
-			var delta = SPF * this.MOVE_SPEED; 
+			var delta = eigh.getSPF() * this.MOVE_SPEED; 
 			//console.log(delta);
 
 			switch(direction){
@@ -303,28 +304,21 @@ var Devil = function(){
 		}
 	}
 	this.updateHeight = function(){
-		var dice = Board.getDiceAtPos(Mesh.position.x, Mesh.position.z);
+		var dice = eigh.board.getDiceAtPos(Mesh.position.x, Mesh.position.z);
 		if(typeof dice == "object"){
 			Mesh.position.y = dice.sink + this.yOnDice - 1;
 			this.isOnDice = true;
 		} else {
-			//console.log(Board.matrix);
 			Mesh.position.y = this.yOnDice - 1;
 			this.isOnDice = false;
 		}
 		this.activeDice = dice;
-		var pos = Board.getBoardPos(Mesh.position.x, Mesh.position.z);
+		var pos = eigh.board.getBoardPos(Mesh.position.x, Mesh.position.z);
 		this.boardx = pos.boardx;
 		this.boardy = pos.boardy;
 	}
 }
 
-var devil = new function(){
-	this.init = function(){
-		// Дополняем класс параметрами из вызова
-		var properties = window.components.getProperties('devil');
-		$.extend(self, properties);
-		window.components.loaded('devil');
-	}
-}
-window.components.require(['scene', 'board'], devil.init);
+window.components.require(['scene', 'board'], function(){
+	window.components.loaded('devil');
+});

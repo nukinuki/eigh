@@ -39,7 +39,7 @@ Screen.prototype.transition = function(direction, callback){
 	camera.position.z = 5;
 
 	var curtainSprite = new THREE.Sprite(new THREE.SpriteMaterial({
-  		map: THREE.ImageUtils.loadTexture(imgdir + "curtain-fill.png"),
+  		map: THREE.ImageUtils.loadTexture(eigh.config.imgdir + "curtain-fill.png"),
   		transparent: false,
   		color: 0,
   		useScreenCoordinates: true,
@@ -49,7 +49,7 @@ Screen.prototype.transition = function(direction, callback){
 	curtainSprite.scale.set(window.innerWidth, window.innerHeight, 1);
 
 	var curtainMask = new THREE.Sprite(new THREE.SpriteMaterial({
-  		map: THREE.ImageUtils.loadTexture(imgdir + "curtain-mask.png"),
+  		map: THREE.ImageUtils.loadTexture(eigh.config.imgdir + "curtain-mask.png"),
   		transparent: true,
   		useScreenCoordinates: true,
   		alignment: THREE.SpriteAlignment.center

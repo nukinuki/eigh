@@ -1,6 +1,6 @@
 /* Keyboard buffer. Make arrow keys work as supposed */
 
-var keyboard = new function(){
+eigh.keyboard = new function(){
 	var KCODES = {
 		'LEFT': 37,
 		'UP': 38,
@@ -12,6 +12,9 @@ var keyboard = new function(){
 	var keyhold = [];
 	var queue = [];
 	var t = this;
+
+	var Clock = new THREE.Clock();
+	Clock.start(); 
 
 	this.init = function(){
 		// Дополняем класс параметрами из вызова
@@ -28,7 +31,7 @@ var keyboard = new function(){
 			keystate[event.keyCode] = true;
 
 			if(!keyhold[event.keyCode])
-				keyhold[event.keyCode] = Clock.elapsedTime;
+				keyhold[event.keyCode] = Clock.getElapsedTime();
 		});
 		$(document).on('keyup', function(event){
 			keystate[event.keyCode] = false;
@@ -46,7 +49,7 @@ var keyboard = new function(){
 	}
 	this.holdTime = function(key){
 		if(keyhold[KCODES[key]]){
-			return Clock.elapsedTime - keyhold[KCODES[key]];
+			return Clock.getElapsedTime() - keyhold[KCODES[key]];
 		} else {
 			return 0;
 		}
@@ -76,5 +79,5 @@ var keyboard = new function(){
 		return (keystate[KCODES.UP] || keystate[KCODES.DOWN] || keystate[KCODES.LEFT] || keystate[KCODES.RIGHT]);
 	}
 }
-var Keyboard = keyboard; // should replace everywhere, actually
-window.components.require([], keyboard.init);
+//var Keyboard = eigh.keyboard; // should replace everywhere, actually
+window.components.require([], eigh.keyboard.init);

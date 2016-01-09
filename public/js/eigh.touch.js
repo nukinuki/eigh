@@ -1,6 +1,6 @@
 /* Touch controller */
 
-var Touch = new function(){
+eigh.touch = new function(){
 
 	var lastX,
 		lastY,
@@ -143,4 +143,4 @@ var Touch = new function(){
 	}
 }
 
-window.components.require(['scene'], Touch.init);
+window.components.require(['scene'], eigh.touch.init);

@@ -25,7 +25,7 @@ window.components.require(['screen', 'config'], function(){
 				var $this = $(this);
 				var opacity = minOpacity;
 
-				this.timer = setInterval(function(){
+				self.timer = setInterval(function(){
 					opacity += speed * reverse;
 					if(opacity >= minOpacity && opacity <= maxOpacity){
 						$this.css({opacity: opacity});
@@ -35,7 +35,7 @@ window.components.require(['screen', 'config'], function(){
 				}, 100);
 			});
 
-			var music = new Howl({
+			/* var music = new Howl({
 				urls: ['/music/xi_intro.ogg', '/music/xi_intro.mp3'],
 				autoplay: true,
 		  		loop: false, //it somehow doesn't work
@@ -43,9 +43,11 @@ window.components.require(['screen', 'config'], function(){
 		  		onend: function() {
 		    		self.music.play();
 		  		}
-			});
+			}); */
 
-			this.music = music;
+			eigh.loadMusic();
+			this.music = eigh.music.intro;
+			this.music.play();
 
 			$('a[href="#start"]').on('click', function(){
 				self.transitionTo('game');
@@ -117,7 +119,7 @@ window.components.require(['screen', 'config'], function(){
 		var sprites = [];
 		for(var i = 1; i <= 6; i++){
 			sprites.push(new THREE.Sprite(new THREE.SpriteMaterial({
-		  		map: THREE.ImageUtils.loadTexture(imgdir + "intro-pattern-d"+i+".png"),
+		  		map: THREE.ImageUtils.loadTexture(eigh.config.imgdir + "intro-pattern-d"+i+".png"),
 		  		transparent: true,
 		  		useScreenCoordinates: true,
 		  		alignment: THREE.SpriteAlignment.topLeft
